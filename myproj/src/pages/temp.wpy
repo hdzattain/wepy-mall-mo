@@ -1,0 +1,32 @@
+<style lang="scss">
+</style>
+<template>
+  <view class="page">
+  </view>
+</template>
+
+<script>
+  import wepy from @wepy/core'
+  export default class Index extends wepy.page {
+    config = {
+      navigationBarTitleText: 'test'
+    }
+    components = {
+    }
+
+    data = {
+    }
+
+    computed = {
+      now () {
+        return +new Date()
+      }
+    }
+
+    methods = {
+    }
+
+    onLoad() {
+    }
+  }
+</script>

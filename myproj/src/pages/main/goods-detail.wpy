@@ -1,0 +1,1139 @@
+<style lang="scss" rel="stylesheet/scss">
+  @import '../../assets/scss/index.scss';
+  @import '../../assets/scss/jd-detail.scss';
+
+  .mall-goods-detail {
+    padding-bottom: $tab-bar-height;
+    .goods-image-area {
+      position: relative;
+      background: $color-white;
+      .swiper {
+        height: auto;
+        .image {
+          display: block;
+          overflow: hidden;
+          width: 100%;
+        }
+      }
+      .page-number {
+        background: rgba(0, 0, 0, 0.4);
+        position: absolute;
+        text-align: center;
+        z-index: 2;
+        height: 32rpx;
+        line-height: 32rpx;
+        border-radius: 40rpx;
+        right: 30rpx;
+        bottom: 30rpx;
+        color: #ffffff;
+        font-size: $xg-size-1;
+        padding-left: 15rpx;
+        padding-right: 15rpx
+      }
+    }
+    .goods-info {
+      background: $color-white;
+      padding: 50rpx 30rpx;
+      .name {
+        font-size: $xg-size-8;
+      }
+      .price {
+        font-size: 24px;
+        margin-top: 30rpx;
+        @include flex-x-middle();
+        .new {
+          color: $xg-c-red;
+          font-weight: bold;
+        }
+        .leader-price {
+          font-size: $xg-size-5;
+          text-decoration: line-through;
+          color: #999;
+          margin-left: 20rpx;
+        }
+        .fenqi {
+          color: #999;
+          padding: 0 10rpx;
+          font-size: $xg-size-4;
+          text {
+            font-weight: bold;
+            color: $xg-c-red;
+            font-size: $xg-size-7;
+          }
+        }
+      }
+    }
+    .service-info {
+      margin-top: 20rpx;
+      background: #fff;
+      .title-item {
+        height: 100rpx;
+        @include flex-x-middle();
+        @include flex-justify-content_space-between();
+        padding: 0 30rpx;
+        border-bottom: 1px solid #eeeded;
+        .icon {
+          width: 6rpx;
+        }
+      }
+      .service-section {
+        padding: 20rpx 30rpx 40rpx 30rpx;
+        position: relative;
+        @include flex-x();
+        flex-wrap: wrap;
+        view {
+          @include flex-x-middle();
+          font-size: $xg-size-3;
+          color: #666;
+          margin-top: 20rpx;
+          margin-right: 40rpx;
+          image {
+            width: 22rpx;
+            margin-right: 10rpx;
+          }
+        }
+        .right-arrow {
+          position: absolute;
+          top: 50%;
+          transform: translateY(-6rpx);
+          right: 30rpx;
+          width: 6rpx;
+        }
+      }
+    }
+    .comment-section {
+      background-color: #fff;
+      margin-top: 20rpx;
+      .comment-title {
+        height: 86rpx;
+        padding-left: 30rpx;
+        @include flex-x-middle();
+        border-bottom: 1px solid $xg-c-seg;
+      }
+      .read-more {
+        @include flex-center();
+        height: 108rpx;
+        label {
+          display: block;
+          width: 150rpx;
+          height: 48rpx;
+          line-height: 48rpx;
+          color: #333;
+          border: 1px solid #a1a1a1;
+          border-radius: 48rpx;
+          text-align: center;
+        }
+      }
+    }
+    .goods-des {
+      padding: 20rpx 0;
+      background-color: white;
+      .des-title {
+        height: 88rpx;
+        line-height: 88rpx;
+        padding: 0 30rpx;
+        color: #666;
+        font-size: $xg-size-5;
+      }
+      .wearQD {
+        padding: 0 30rpx;
+        color: #666;
+        font-size: $xg-size-4;
+      }
+    }
+  }
+
+  .fix-titles {
+    @include flex-x-middle();
+    z-index: 10;
+    position: fixed;
+    left: 0;
+    top: 0;
+    width: 100%;
+    background-color: #fff;
+    height: 80rpx;
+    border-bottom: 1px solid $xg-c-seg;
+    view {
+      @include flex(1);
+      height: 80rpx;
+      line-height: 80rpx;
+      text-align: center;
+      &.active {
+        font-weight: bold;
+        color: $xg-c-red;
+      }
+    }
+  }
+
+  .buy-pop-section {
+    position: fixed;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(66, 66, 66, .6);
+    z-index: 999;
+    .pop-content {
+      position: absolute;
+      background: white;
+      width: 100%;
+      left: 0;
+      bottom: 0;
+      overflow: auto;
+      padding-bottom: 88rpx;
+      max-height: 900rpx;
+      min-height: 600rpx;
+      .close-icon {
+        position: absolute;
+        right: 30rpx;
+        top: 30rpx;
+        width: 24rpx;
+        height: 24rpx;
+        margin: 0;
+      }
+      .image-area {
+        height: 246rpx;
+        .image {
+          height: 166rpx;
+          width: 166rpx;
+          margin: 40rpx 30rpx;
+        }
+        .price-area {
+          padding-bottom: 30rpx;
+          font-size: $xg-size-5;
+          .real-price {
+            height: 50rpx;
+            line-height: 50rpx;
+            font-weight: bold;
+            color: $color-red;
+            font-size: $xg-size-10;
+          }
+        }
+      }
+      .select-list {
+        padding: 0 30rpx;
+        .title {
+          @include flex-x-middle();
+          font-size: $xg-size-4;
+          color: #333;
+          margin-top: 20rpx;
+          margin-bottom: 30rpx;
+        }
+        .list {
+          /*display: flex;*/
+          /*flex-wrap: wrap;*/
+          view {
+            display: inline-block;
+            height: 70rpx;
+            line-height: 70rpx;
+            padding: 0 20rpx;
+            font-size: $size-4;
+            color: #333;
+            background-color: #f5f5f5;
+            border-radius: 4px;
+            margin-right: 30rpx;
+            margin-bottom: 20rpx;
+            word-break: keep-all;
+            &.selected {
+              color: #ffffff !important;
+              background-color: #a63533 !important;
+            }
+            &.haveNot {
+              color: #dddd;
+            }
+          }
+        }
+      }
+      .number-select {
+        @include flex-x-middle();
+        @include flex-justify-content_space-between();
+        height: 90rpx;
+        padding: 0 30rpx;
+        margin: 20rpx 0;
+        .control {
+          @include flex-x-middle();
+          .button {
+            @include flex(none);
+            @include flex-center();
+            height: 48rpx;
+            line-height: 48rpx;
+            width: 52rpx;
+            border-radius: 0 4px 4px 0;
+            border: 1px solid #999999;
+            font-size: $xg-size-4;
+            font-weight: bold;
+            color: #999999;
+            border-left-width: 0;
+          }
+          .button:first-of-type {
+            border-radius: 4px 0 0 4px;
+            border-right: 0;
+            border-left-width: 1px;
+          }
+          input {
+            @include flex(none);
+            @include flex-center();
+            min-height: 0;
+            text-align: center;
+            border: 1px solid #999;
+            height: 48rpx;
+            line-height: 48rpx;
+            width: 70rpx;
+            font-weight: bold;
+            outline: 0;
+          }
+        }
+      }
+    }
+  }
+
+  .disable-tips {
+    position: fixed;
+    bottom: 88rpx;
+    left: 0;
+    width: 100%;
+    height: 70rpx;
+    line-height: 70rpx;
+    text-align: center;
+    background-color: rgba(220, 220, 220, .6);
+    font-size: $xg-size-3;
+  }
+
+  .footer-bar {
+    position: fixed;
+    background: $color-white;
+    bottom: 0;
+    left: 0;
+    height: 88rpx;
+    width: 100%;
+    text-align: center;
+    z-index: 1000;
+    @include flex-x();
+    .customer-service {
+      @include flex(auto);
+      @include flex-x-middle();
+      @include flex-justify-content_space-around();
+      height: 100%;
+      background: #fcfcfc;
+      image {
+        width: 36rpx;
+        height: 36rpx;
+      }
+    }
+    button {
+      border-radius: 0;
+      outline: 0;
+    }
+    .buy-button {
+      @include flex-center();
+      width: 212rpx;
+      font-size: $xg-size-5;
+      color: #fff;
+      background-color: #d7807e;
+      &.disable {
+        background-color: #ccc;
+      }
+    }
+    .add-button {
+      @include flex-center();
+      width: 212rpx;
+      font-size: $xg-size-5;
+      color: #fff;
+      background-color: $xg-c-red;
+      &.disable {
+        background-color: #ccc;
+      }
+    }
+  }
+
+  .scale-box {
+    transform-origin: 0px 0px 0px;
+    font-size: 29px;
+  }
+
+  #wareInfo {
+    margin: 0;
+    padding: 5px 0 0;
+  }
+
+  .btm-detail {
+    background-color: #fff;
+    margin-top: 20rpx;
+  }
+
+  .detail {
+    overflow: hidden;
+    position: relative;
+    margin: 0 10px 12px;
+    height: 100%;
+    font-size: 12px;
+    color: #5a5a5a;
+  }
+
+  .scale-box {
+    display: table;
+    word-wrap: break-word;
+    word-break: break-all
+  }
+
+  .scale-box image {
+    -webkit-user-select: none;
+    -ms-user-select: none;
+    -moz-user-select: none;
+    user-select: none
+  }
+</style>
+<template>
+  <!--<view class="fix-titles" wx:if="{{showTitle}}">-->
+        <!--<view :class="{'active': showTopIndex === 0}"-->
+              <!--@tap="onClickTopTitle(0)">评论</view>-->
+    <!--<view :class="{'active': showTopIndex === 1}"-->
+          <!--@tap="onClickTopTitle(1)">详情</view>-->
+    <!--<view :class="{'active': showTopIndex === 2}"-->
+          <!--@tap="onClickTopTitle(2)">规格</view>-->
+  <!--</view>-->
+    <scroll-view class="mall-goods-detail"
+                 scroll-y
+                 style="height: 100vh"
+                 bindscroll="scroll"
+                 scroll-into-view="{{toView}}">
+      <view class="goods-image-area">
+        <swiper class="swiper"
+                bindchange="actionChangeGoodsImage"
+                style="height:{{imgheights[goodsImageIndex]}}rpx;">
+          <repeat for="{{goodsImageList}}"
+                  item="imageUrl"
+                  key="index">
+            <swiper-item class="swiper-item">
+              <image class="image"
+                     src="{{imageUrl}}"
+                     mode="widthFix"
+                     bindload="imageLoad"
+                     data-id='{{index}}'>
+              </image>
+            </swiper-item>
+          </repeat>
+        </swiper>
+        <label class="page-number">{{goodsImageIndex + 1}}/{{goodsImageList.length}}</label>
+      </view>
+      <view class="goods-info">
+        <label class="name mall-product-name">{{goods.name}}</label>
+        <view class="price flex-middle-x">
+          <label class="new">￥{{globalWxs.formatFenPrice(goods.nbPrice)}}</label>
+          <label wx:if="{{goods.wzPrice}}" class="leader-price">￥{{globalWxs.formatFenPrice(goods.wzPrice)}}</label>
+          <label wx:if="{{goods.jdPrice}}" class="leader-price">￥{{globalWxs.formatFenPrice(goods.jdPrice)}}</label>
+          <!--<view class="fenqi" wx:if="{{globalWxs.formatFenqi(goods).num !== 1}}"><text>￥{{globalWxs.formatFenqi(goods).price}}</text> x {{globalWxs.formatFenqi(goods).num}}期</view>-->
+        </view>
+      </view>
+      <view class="service-info">
+        <view wx:if="isSale" class="title-item" @tap="actionClickShowPopArea">
+          <view class="title">规格数量选择</view>
+          <image class="icon" src="./img/jiantou3.png" mode="widthFix">
+          </image>
+        </view>
+        <view class="service-section">
+          <repeat for="{{serviceItems}}">
+            <view>
+              <image src="./img/fuwugouxuan.png" mode="widthFix">
+              </image>
+              <span class="name">{{item}}</span>
+            </view>
+          </repeat>
+          <image class="right-arrow" src="./img/jiantou3.png" mode="widthFix">
+          </image>
+        </view>
+      </view>
+      <view class="comment-section">
+        <view id="comments-pos"></view>
+        <view class="comment-title">
+          商品评价（{{commentsCount}}）
+        </view>
+        <view class="comment-list" wx:if="{{showComments}}">
+          <repeat for="{{comments}}" item="comment">
+            <comment-cell :comment="comment"></comment-cell>
+          </repeat>
+        </view>
+        <view class="read-more" wx:if="{{commentsCount !== 0}}">
+          <label @tap="onClickMoreComment">查看更多</label>
+        </view>
+      </view>
+      <view class="goods-des">
+        <view id="detail-pos"></view>
+        <view class="des-title">商品介绍</view>
+        <view class="detail_info_wrap" id="detail">
+          <view class="detail_item p_desc" id="detail1" style="position: relative; padding: 0px;height:{{scaleH + 'px'}}">
+            <view class="parent-wrapper" style="height:{{scaleH + 'px'}}">
+              <view id="commDesc" class="detail_pc" hasdata="1" style="transform-origin: 0px 0px 0px; line-height: 2;transform: scale({{scaling}});font-size:{{desFontSize}}">
+                <rich-text type="node" nodes="{{goodsInfoRichNodes}}"></rich-text>
+                <rich-text type="node" nodes="{{goodsTableRichNodes}}"></rich-text>
+              </view>
+            </view>
+          </view>
+        </view>
+        <!--<view id="btmDetail" class="btm-detail">-->
+          <!--<view class="detail" id="wareInfo" style="display:block;">-->
+            <!--<view id="scale-parent" style="margin: 0px 10px; overflow: hidden;height: {{scaleH + 'px'}}">-->
+              <!--<view class="scale-box" id="scale-cont" style="transform: scale({{scaling}})">-->
+                <!--<rich-text type="node" nodes="{{goodsInfoRichNodes}}"></rich-text>-->
+                <!--<rich-text type="node" nodes="{{goodsTableRichNodes}}"></rich-text>-->
+              <!--</view>-->
+            <!--</view>-->
+          <!--</view>-->
+        <!--</view>-->
+        <view class="des-title qingdan-title" id="qingdan">物品清单</view>
+        <view class="wearQD">{{goodsExt.wearQD}}</view>
+      </view>
+    </scroll-view>
+
+  <view wx:if="{{isShowBuyPopArea}}"
+        class="buy-pop-section"
+        @tap.stop="onClickClosePopArea">
+    <view class="pop-content" @tap.stop="doNothing">
+      <image @tap="onClickClosePopArea"
+             class="close-icon"
+             src="./img/close.png"
+             mode="widthFix"></image>
+      <view class="image-area flex-x">
+        <image class="image" src="{{smallImg || goodsImageList[0].path}}">
+        </image>
+        <view class="price-area flex-y">
+          <view style="flex: 1;"></view>
+          <label class="real-price">￥{{globalWxs.formatFenPrice(selectedPrice)}}</label>
+        </view>
+      </view>
+      <view class="select-list">
+        <repeat for="{{similarGoods}}" item="group" index="i">
+          <view class="title">{{group.saleName}}</view>
+          <view class="list">
+            <repeat for="{{group.saleAttrList}}">
+              <view @tap="onClickSimilar({{item}}, {{i}})"
+                    class="{{mainWxs.checkIsNot(targetGoodsList, selectedList, item, i, isFirst, nowDim) ? 'haveNot' : ''}} {{mainWxs.isSelected(selectedList, item, i, skuId, isFirst) ? 'selected' : ''}}">
+                {{item.saleValue}}
+              </view>
+            </repeat>
+          </view>
+        </repeat>
+        <!--<section class="num-section">-->
+        <!--<div class="title">-->
+        <!--数量-->
+        <!--</div>-->
+        <!--<div class="select-num">-->
+        <!--<i class="btn" :class="{banned: buyNumber === 1}" @click="onClickDown">-</i>-->
+        <!--<input type="number"-->
+        <!--v-model.number="buyNumber"-->
+        <!--@input="onSelectNum"-->
+        <!--min="1"-->
+        <!--maxlength="3">-->
+        <!--<i class="btn" :class="{banned: buyNumber === buyMax}" @click="onClickUp">+</i>-->
+        <!--</div>-->
+        <!--</section>-->
+      </view>
+      <view class="number-select">
+        <view class="title">
+          数量
+        </view>
+        <view class="control">
+          <text class="button" @tap="actionClickDown">-</text>
+          <input class="count-number"
+                 type="number"
+                 maxlength="3"
+                 min="1"
+                 disabled="{{true}}"
+                 value="{{goodsCount}}"/>
+          <text class="button" @tap="actionClickUp">+</text>
+        </view>
+      </view>
+    </view>
+  </view>
+  <view wx:if="{{!isSale}}" class="disable-tips title">{{noSaleTips}}</view>
+  <view class="footer-bar">
+    <view class="customer-service">
+      <image @tap="onClickHomeIcon" class="icon" src="./img/shouye.png" mode="widthFix">
+      </image>
+      <image class="icon" src="./img/kefu.png" mode="widthFix">
+      </image>
+      <image @tap="onClickCarIcon" class="icon" src="./img/gouwuche.png" mode="widthFix">
+      </image>
+    </view>
+    <button class="buy-button" :class="{'disable': !canClickBuy}" @tap="onClickAdd">加入购物车</button>
+    <button class="add-button" :class="{'disable': !canClickBuy}" @tap="onClickBuy">购买</button>
+  </view>
+</template>
+
+<script>
+  import wepy from '@wepy/core'
+  import NetworkManagerGoods from '../../network/NetworkManagerGoods'
+  import _ from 'underscore'
+  import EncodeTool from '../../tool/EncodeTool';
+  import CPParse from '../../parse/CPParse'
+  import NetworkManager from '../../network/NetworkManager';
+  import globalWxs from '../../wxs/global.wxs'
+  import mainWxs from '../../wxs/main.wxs'
+  import { connect } from 'wepy-redux' // eslint-disable-line
+  import TABLE_CSS_STRING from './table-css';
+  import CommentCell from '@/components/widget/comment-cell';
+
+  @connect({
+    isLogin(state) {
+      return state.user.hasAuthor;
+    },
+    userInfo(state) {
+      return state.user.userInfo;
+    }
+  })
+
+   wepy.page ({
+    config = {
+      navigationBarTitleText: '商品详情'
+    },
+
+    components = {
+        'comment-cell': CommentCell
+    },
+
+    wxs = {
+      globalWxs,
+      mainWxs
+    },
+
+    data:{
+      goodsInfoRichNodes: [],
+      goodsTableRichNodes: [],
+      isShowBuyPopArea: false,
+      skuId: 0,
+      goods: null,
+      goodsExt: null,
+      goodsImageList: [],
+      goodsImageIndex: 0,
+      serviceItems: [
+        '小呱自营假1赔3',
+        '7天无忧退货',
+        '次日快速送达',
+        '满88元免邮费',
+        '国内部分地区不配送'
+      ],
+      imageHeader: {},
+      isFirst: true,       //  是否是第一次开启规格界面
+      nowDim: 0,           //  当前点击的规格栏
+      selectedList: [],      //  已选择的规格列表
+      selectedPrice: 0,
+      similarGoods: [],
+      goodsCount: 1,
+      goodsInventory: 9999,
+      isSale: true,
+      scaling: 1,
+      scaleH: 'auto',
+      noSaleTips: '',
+      comments: [],
+      commentsCount: 0,
+      showComments: false,
+      showTitle: false,
+      showTopIndex: 0,
+      desFontSize: '12px',
+      toView: '',
+      imgheights: [],
+      imgwidth: 750 // 图片宽度
+    },
+
+    computed:{
+      totalPrice() {
+        return this.goodsCount * this.selectedPrice;
+      },
+//      已选列表交集
+      targetGoodsList() {
+        if (this.isFirst) {
+          return [this.skuId];
+        } else {
+//          已点击的ids取交集
+          let arr = [];
+          this.selectedList.forEach(x => {
+            if (!_.isEmpty(x)) {
+              arr.push(x.skuIds);
+            }
+          })
+          return _.intersection(...arr);
+        }
+      },
+//      最终id
+      selectedGoodsId() {
+        if (this.targetGoodsList.length === 1 && this.selectedList.every(x => !_.isEmpty(x))) {
+          return this.targetGoodsList[0];
+        } else {
+          return ''
+        }
+      },
+//      小图
+      smallImg() {
+        if (this.similarGoods.length === 0) {
+          if (this.goodsImageList.length > 0) {
+            return this.goodsImageList[0];
+          }
+        } else {
+          let imagePath;
+          let imageIndex = this.similarGoods[0].saleAttrList.findIndex(x => {
+            return JSON.stringify(x.skuIds) === JSON.stringify(this.selectedList[0].skuIds);
+          })
+          if (imageIndex >= 0) {
+            imagePath = this.similarGoods[0].saleAttrList[imageIndex].imagePath;
+            return this.imageHeader.smallUrl + imagePath
+          } else {
+            return ''
+          }
+        }
+      },
+      canClickBuy() {
+        return this.isSale && this.selectedGoodsId !== '' && this.selectedPrice > 0;
+      }
+    },
+
+    methods:{
+      imageLoad(e) {
+        let imgwidth = e.detail.width;
+        let imgheight = e.detail.height;
+        let ratio = imgwidth / imgheight; // 获取图片真实宽度
+        let viewHeight = 750 / ratio; // 计算的高度值
+        imgheight = viewHeight;
+        console.log(imgheight);
+        console.log(e.target.dataset.id);
+        let imgheights = this.imgheights;
+        imgheights[e.target.dataset.id] = imgheight; // 把每一张图片的对应的高度记录到数组里
+        this.imgheights = imgheights;
+        this.$apply();
+      },
+      scroll(e) {
+        let query = wepy.createSelectorQuery();
+        let commentT = new Promise(function (resolve, reject) {
+          query.select('.comment-section').boundingClientRect((res) => {
+            resolve(res.top)
+          }).exec();
+        });
+        let detailT = new Promise(function (resolve, reject) {
+          query.select('.goods-des').boundingClientRect((res) => {
+            resolve(res.top)
+          }).exec();
+        });
+        let listT = new Promise(function (resolve, reject) {
+          query.select('.qingdan-title').boundingClientRect((res) => {
+            resolve(res.top)
+          }).exec();
+        });
+        Promise.all([commentT, detailT, listT])
+          .then(list => {
+              if (list[0] >= 0) {
+                  this.showTitle = false;
+              } else {
+                this.showTitle = true;
+                if (list[2] <= 0) {
+                  this.showTopIndex = 2;
+                } else if (list[1] <= 0) {
+                  this.showTopIndex = 1;
+                } else {
+                  this.showTopIndex = 0;
+                }
+              }
+            this.$apply();
+          })
+      },
+      doNothing() {
+        console.log('nothing');
+      },
+      //    点击规格
+      onClickSimilar(item, dim) {
+        //      不可点击
+        if (this.checkIsNot(item, dim)) {
+          return
+        }
+        this.nowDim = dim;
+        this.isFirst = false;
+//      点击已选择的则把它清空为[]
+        if (JSON.stringify(item.skuIds) === JSON.stringify(this.selectedList[dim].skuIds)) {
+          this.selectedList[dim] = {};
+          this.$apply();
+        } else {
+          this.selectedList[dim] = item;
+          this.$apply();
+//      当其他已经选择有的时候  如果交集没有则清空
+//        选择其余的与刚点击的做对比
+          this.selectedList.forEach((x, index) => {
+            if (index !== dim && !_.isEmpty(x)) {
+              if (_.intersection(x.skuIds, item.skuIds).length === 0) {
+                this.selectedList[index] = {};
+                this.$apply();
+              }
+            }
+          })
+        }
+        if (this.selectedGoodsId !== '') {
+          NetworkManagerGoods.goodsPrice(this.selectedGoodsId)
+            .then(data => {
+              this.selectedPrice = data;
+              this.$apply();
+            }, err => {
+              console.log(err);
+            })
+        } else {
+          this.selectedPrice = 0;
+          this.$apply();
+        }
+        this.$apply();
+      },
+      onClickClosePopArea() {
+        this.isShowBuyPopArea = false;
+      },
+      actionClickShowPopArea(){
+        this.isShowBuyPopArea = true;
+      },
+      actionChangeGoodsImage(data){
+        this.goodsImageIndex = data.detail.current;
+      },
+      actionClickDown() {
+        if (this.goodsCount > 1) {
+          this.goodsCount--
+        }
+      },
+      actionClickUp() {
+        if (this.goodsCount <= this.goodsInventory) {
+          this.goodsCount++
+        }
+      },
+      onClickAdd() {
+        if (this.isShowBuyPopArea) {
+          if (this.canClickBuy) {
+            if (!this.isLogin) {
+              wepy.navigateTo({
+                url: '../mine/login'
+              })
+            } else {
+              this.addToCar();
+            }
+          }
+        } else {
+          this.isShowBuyPopArea = true;
+        }
+      },
+      onClickBuy() {
+        if (this.isShowBuyPopArea) {
+          if (this.canClickBuy) {
+            if (!this.isLogin) {
+              wepy.navigateTo({
+                url: '../mine/login'
+              })
+            } else {
+              this.goToBuy();
+            }
+          }
+        } else {
+          this.isShowBuyPopArea = true;
+        }
+      },
+      onClickCarIcon() {
+        wepy.switchTab({
+          url: '../cart/cart'
+        })
+      },
+      onClickHomeIcon() {
+        wepy.switchTab({
+          url: '../main/main'
+        })
+      },
+      onClickMoreComment() {
+        wepy.navigateTo({
+          url: './comment-list?skuId=' + this.skuId
+        })
+      },
+      onClickTopTitle(index) {
+//        let query = wepy.createSelectorQuery();
+//        if (Number(index) === 0) {
+//          this.showTopIndex = 0;
+//            query.select('.comment-section').boundingClientRect((res) => {
+//              console.log(res);
+//              this.toView = 'comments';
+//              this.$apply();
+//            }).exec();
+//        } else if (Number(index) === 1) {
+//          this.showTopIndex = 1;
+//          query.select('.goods-des').boundingClientRect((res) => {
+//            this.toView = 'goods-detail';
+//            this.$apply();
+//          }).exec();
+//        } else if (Number(index) === 2) {
+//          this.showTopIndex = 2;
+//          query.select('.qingdan-title').boundingClientRect((res) => {
+//            this.toView = 'qingdan';
+//            this.$apply();
+//          }).exec();
+//        }
+      }
+    },
+
+    onLoad(options) {
+      this.skuId = parseInt(options.skuId);
+      this.fetchCheckIsSale();
+      this.fetchGoodsState();
+      this.fetchGoodsDetail();
+      this.fetchSimilarGoods();
+      this.fetchComments();
+    },
+
+    checkIsNot(item, dim) {
+      return item.skuIds.every(x => {
+        return !this.targetGoodsList.includes(x)
+      }) && _.isEmpty(this.selectedList[dim]) && !this.isFirst && this.nowDim !== dim && !this.selectedList.every(item => {
+        return _.isEmpty(item)
+      });
+    },
+
+    addToCar() {
+      let saleValue = '';
+      this.selectedList.forEach((item, index) => {
+        if (index === 0) {
+          saleValue = saleValue + this.similarGoods[index].saleName + ':' + item.saleValue;
+        } else {
+          saleValue = saleValue + '/' + this.similarGoods[index].saleName + ':' + item.saleValue;
+        }
+      })
+      let buyParams = {
+        'skuReqs': [
+          {
+            'num': this.goodsCount,
+            'skuId': this.selectedGoodsId,
+            'saleValue': saleValue
+          }
+        ]
+      };
+      wepy.showNavigationBarLoading();
+      NetworkManagerGoods.goodsAddToCart(buyParams).then(data => {
+        this.isShowBuyPopArea = false;
+        wepy.showToast({
+          title: '成功加入购物车',
+          icon: 'success'
+        })
+        this.$apply();
+        wepy.hideNavigationBarLoading();
+      }, err => {
+        wepy.showToast({title: err.message, icon: 'none'})
+        wepy.hideNavigationBarLoading();
+      })
+    },
+
+    goToBuy() {
+      let saleValue = '';
+      this.selectedList.forEach((item, index) => {
+        if (index === 0) {
+          saleValue = saleValue + this.similarGoods[index].saleName + ':' + item.saleValue;
+        } else {
+          saleValue = saleValue + '/' + this.similarGoods[index].saleName + ':' + item.saleValue;
+        }
+      })
+      let payInfo = JSON.stringify({
+        total: this.totalPrice,
+        selectedList: [
+          {
+            'skuId': this.selectedGoodsId,
+            'num': this.goodsCount,
+            'nbPrice': this.selectedPrice,
+            'goodsImg': this.smallImg,
+            'name': this.goods.name,
+            'saleValue': saleValue
+          }]
+      })
+      wepy.navigateTo({
+        url: '../payment/payment?payInfo=' + payInfo
+      })
+    },
+
+    fetchCheckIsSale() {
+      let req = {
+        skuIds: [
+          this.skuId
+        ]
+      };
+      NetworkManagerGoods.goodsCheckSale(req).then((info) => {
+        if (info[0].saleState !== 1) {
+          this.isSale = false;
+          this.noSaleTips = '对不起，该商品已下架。'
+        }
+        this.$apply();
+      }, err => {
+        wepy.showToast({title: err.message, icon: 'none'})
+      })
+    },
+
+    fetchGoodsState() {
+      let req = {
+        skuIds: [
+          this.skuId
+        ]
+      }
+      NetworkManagerGoods.goodsState(req).then((info) => {
+        if (info[0].state !== 1) {
+          this.isSale = false;
+          this.noSaleTips = '对不起，该商品暂时无货。'
+        }
+        this.$apply();
+      }).catch(err => {
+        console.log(err)
+        wepy.showToast({title: err.message, icon: 'none'})
+      })
+    },
+
+    fetchGoodsDetail() {
+      wepy.showNavigationBarLoading();
+      NetworkManagerGoods.goodsDetail(this.skuId).then((data) => {
+        this.goods = data.goods;
+        this.goodsExt = data.goodsExt;
+        this.selectedPrice = data.goods.nbPrice;
+        this.fetchGoodsImages();
+        wepy.hideNavigationBarLoading();
+        // TODO: 描述富文本的格式化
+        let introduction = '';
+        let goodsTableRichText = '';
+        if (data.goodsExt && data.goodsExt.mobileDesc) {
+          introduction = data.goodsExt.mobileDesc;
+          goodsTableRichText = data.goodsExt.param;
+        } else {
+          introduction = data.goodsExt.introduction;
+        }
+
+        let otherCssString = TABLE_CSS_STRING;
+        this.renderRichTextNodes(EncodeTool.reconvert(introduction)).then(data => {
+          this.goodsInfoRichNodes = data;
+          this.formatDetail();
+          this.$apply();
+        }, error => {
+          console.log(error);
+          this.formatDetail();
+          this.$apply();
+        });
+        this.renderRichTextNodes(EncodeTool.reconvert(goodsTableRichText), otherCssString).then(data => {
+          console.log('************************');
+          console.log(data);
+          this.goodsTableRichNodes = data;
+        }, error => {
+          console.log(error);
+        })
+      }, error => {
+        console.log(error)
+      })
+    },
+
+    renderRichTextNodes(stationName, otherCssString = ''){
+      return new Promise((resolve, reject) => {
+        let aimTree = CPParse.parseString(stationName);
+        let linkStyleList = [];
+        let traverse = (aimTree) => {
+          if (aimTree.name === 'link') {
+            linkStyleList.push('https:' + aimTree.href);
+          }
+          if (aimTree.hasOwnProperty('children')) {
+            for (let i = 0; i < aimTree.children.length; i++) {
+              traverse(aimTree.children[i]);
+            }
+          }
+        };
+        traverse(aimTree);
+        Promise.all(linkStyleList.map((link) => {
+          return NetworkManager.instance().freedomGET(link)
+        })).then(cssStringList => {
+          let cssString = otherCssString;
+          cssStringList.forEach(cs => {
+            cssString += cs;
+          })
+          CPParse.applyCss2Node(aimTree, cssString);
+          resolve(aimTree.children);
+        }, error => {
+          reject(error);
+        })
+      })
+    },
+
+    fetchSimilarGoods() {
+      NetworkManagerGoods.goodsSimilar(this.skuId).then((data) => {
+        //        zhx
+        this.similarGoods = data.similarProducts.slice(0);
+        //        通过goodsId，找到各种规格对应的选择项，构成selectedList
+        if (this.similarGoods.length > 0) {
+          this.similarGoods.forEach(item => {
+            this.selectedList.push(item.saleAttrList.find(x => {
+              return x.skuIds.includes(this.skuId)
+            }))
+          });
+        }
+        this.imageHeader = data.imageHeader;
+        this.$apply();
+      }).catch((err) => {
+          console.log(err);
+//        wepy.showToast({title: err.message, icon: 'none'})
+      })
+    },
+
+    //    获取评论
+    fetchComments() {
+      NetworkManagerGoods.goodsComments(this.skuId)
+        .then(list => {
+          this.commentsCount = list.length;
+          this.comments = list.map(item => {
+            let picArray = item.pictureInfoList.split(',').map(url => {
+              return 'http:' + url;
+            })
+            let havePic = picArray.length !== 0;
+            let userImg;
+            if (item.userImgURL.indexOf('http://') < 0) {
+              userImg = 'http://' + item.userImgURL;
+            } else {
+              userImg = item.userImgURL;
+            }
+            return {picArray, havePic, userImg, ...item}
+          })
+          this.comments = this.comments.slice(0, 3);
+          if (this.comments.length > 0) {
+            this.showComments = true;
+          }
+          this.$apply();
+        }, err => {
+          console.log(err)
+        })
+    },
+
+    fetchGoodsImages() {
+      NetworkManagerGoods.goodsImages(this.skuId).then((goodsImageList) => {
+        if (goodsImageList && goodsImageList.length > 0) {
+          goodsImageList.sort((a, b) => {
+            if (a.orderSort > b.orderSort) {
+              return 1;
+            } else if (a.orderSort < b.orderSort) {
+              return -1;
+            } else {
+              if (a.isPrimary > b.isPrimary) {
+                return 1;
+              } else {
+                return -1;
+              }
+            }
+          })
+          this.goodsImageList = goodsImageList.map(_ => _.path) || [];
+        } else {
+          this.goodsImageList = [this.goods.goodsImg];
+        }
+        this.$apply();
+      }, error => {
+        console.log(error);
+      })
+    },
+
+    formatDetail() {
+      let query = wepy.createSelectorQuery();
+      let scaleWrapper = query.select('#commDesc');
+      setTimeout(() => {
+        let _this = this;
+        scaleWrapper.boundingClientRect((res) => {
+            console.log(res);
+          _this.scaling = wepy.getSystemInfoSync().windowWidth / res.width;
+          _this.scaleH = res.height * _this.scaling;
+          _this.desFontSize = parseInt(12 / _this.scaling) + 'px';
+          _this.$apply();
+        }).exec();
+      }, 1000)
+    }
+  })
+</script>

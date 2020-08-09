@@ -1,0 +1,637 @@
+<style lang="scss" rel="stylesheet/scss">
+  @import '../../assets/scss/index.scss';
+
+  .cart {
+    background-color: $xg-c-bg;
+    .empty-area {
+      margin-top: 300rpx;
+      @include flex-y-middle();
+      .icon {
+        width: 200rpx;
+      }
+      view {
+        width: 400rpx;
+        height: 70rpx;
+        line-height: 70rpx;
+        text-align: center;
+        margin-top: 30rpx;
+        color: #fff;
+        font-size: $xg-size-5;
+        background-color: $xg-c-red;
+      }
+      text {
+        margin-top: 30rpx;
+        color: #999;
+        font-size: $xg-size-6;
+      }
+    }
+    .cart-area {
+      .tips {
+        @include flex-x-middle();
+        @include flex-justify-content_space-between();
+        padding: 0 30rpx;
+        height: 80rpx;
+        font-size: $xg-size-2;
+        color: #999;
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        background-color: $xg-c-bg;
+        z-index: 1;
+        border-top: 1px solid $xg-c-seg;
+        border-bottom: 1px solid $xg-c-seg;
+        view {
+          @include flex-x-middle();
+          image {
+            width: 8rpx;
+            height: 8rpx;
+            margin-right: 10rpx;
+          }
+        }
+      }
+      .cart-list {
+        padding-top: 80rpx;
+        padding-bottom: 88rpx;
+        .cart-item {
+          height: 190rpx;
+          background: #fff;
+          margin-bottom: 20rpx;
+          padding: 30rpx 30rpx 30rpx 0;
+          @include flex-x-middle();
+          .edit-select-space {
+            padding: 0 30rpx;
+            height: 100%;
+            @include flex-center();
+            .select-icon {
+              width: 34rpx;
+              height: 34rpx;
+            }
+          }
+          .goods-part {
+            @include flex-x-middle();
+            .icon {
+              margin-left: 10rpx;
+              width: 140rpx;
+              height: 140rpx;
+            }
+            .content {
+              margin-left: 20rpx;
+              flex: 1;
+              .name {
+                @include ellipsis();
+                font-size: $xg-size-4;
+                color: #333;
+              }
+              .cart-dim {
+                @include ellipsis(2);
+                font-size: $xg-size-2;
+                color: #999;
+                margin-top: 10rpx;
+                label {
+                  margin-right: 10rpx;
+                }
+              }
+              .info {
+                margin-top: 10rpx;
+                height: 50rpx;
+                line-height: 50rpx;
+                .price {
+                  flex: 1;
+                  color: $xg-c-red;
+                  font-weight: bold;
+                  font-size: $xg-size-5;
+                }
+                input {
+                  min-height: 0;
+                }
+                .input {
+                  @include flex-x-middle();
+                  z-index: 0;
+                  .count-button {
+                    @include flex(none);
+                    @include flex-center();
+                    height: 48rpx;
+                    line-height: 48rpx;
+                    width: 52rpx;
+                    border-radius: 0 4rpx 4rpx 0;
+                    border: 1px solid #999999;
+                    font-size: $xg-size-4;
+                    font-weight: bold;
+                    color: #999999;
+                    border-left-width: 0;
+                  }
+                  .count-button:first-of-type {
+                    border-radius: 4rpx 0 0 4rpx;
+                    border-right: 0;
+                    border-left-width: 1rpx;
+                  }
+                  .count-number {
+                    @include flex(none);
+                    @include flex-center();
+                    text-align: center;
+                    border: 1px solid #999;
+                    height: 48rpx;
+                    line-height: 48rpx;
+                    width: 70rpx;
+                    font-weight: bold;
+                    outline: 0;
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+    .pay-area {
+      @include flex-x-middle();
+      background: #fff;
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      width: 100%;
+      height: 88rpx;
+      text-align: center;
+      font-size: $xg-size-4;
+      color: #999;
+      z-index: 10;
+      .select {
+        padding-left: 30rpx;
+        .select-icon {
+          width: 34rpx;
+          height: 34rpx;
+          margin-right: 30rpx;
+        }
+        height: 100%;
+      }
+      .amount {
+        @include flex(1);
+        @include flex-x-middle();
+        @include flex-justify-content_flex-end();
+        padding-right: 40rpx;
+        .price {
+          color: $xg-c-red;
+          font-weight: bold;
+          margin-left: 10rpx;
+        }
+      }
+      .pay {
+        width: 212rpx;
+        font-size: $xg-size-4;
+        line-height: 88rpx;
+        background: $xg-c-red;
+        color: white;
+        font-weight: bold;
+        border-radius: 0;
+        outline: 0;
+        &.disabled {
+          background-color: #ccc;
+        }
+      }
+    }
+  }
+</style>
+<template>
+  <view class="cart">
+    <view wx:if="{{goodsList.length === 0}}" class="empty-area">
+      <image class="icon" src="./img/dagouwuche.png" mode="widthFix">
+      </image>
+      <view wx:if="{{!isLogin}}" @tap="onClickLogin">登录</view>
+      <text wx:else>去添加点什么吧</text>
+    </view>
+    <view wx:else class="cart-area top-seg">
+      <view class="tips">
+        <repeat for="{{tips}}">
+          <view>
+            <image src="./img/yuan.png">
+            </image>
+            <text>{{item}}</text>
+          </view>
+        </repeat>
+      </view>
+      <view class="cart-list">
+        <repeat for="{{goodsList}}"
+                item="goods"
+                key="goods.skuId">
+          <cart-cell :goods="goods"
+                     :isSelected="cartWxs.isSelected(selectedIds,goods)"
+                     :index="index"
+                     :txtStyle="goods.txtStyle"
+                     @clickGoods.user="onClickGoods"
+                     @clickGoodsSelected.user="onClickGoodsSelected"
+                     @clickPlus.user="onClickPlus"
+                     @clickMinus.user="onClickMinus"
+                     @clickDel.user="onClickDel"
+                     @changeNum.user="onChangeNum"
+                     @touchS.user="touchS"
+                     @touchM.user="touchM"
+                     @touchE.user="touchE"></cart-cell>
+        </repeat>
+      </view>
+    </view>
+    <view class="pay-area">
+      <view class="select flex-center-x"
+            @tap="onClickSelectAll">
+        <image wx:if="{{isSelectedAll}}"
+               class="select-icon"
+               src="./img/gouxuan.png">
+        </image>
+        <image wx:else
+               class="select-icon"
+               src="./img/meixuan.png">
+        </image>
+        <view wx:if="{{selectedCount === 0}}">全选</view>
+        <view wx:else>已选({{selectedCount}})</view>
+      </view>
+      <view class="amount">
+        合计:
+        <text class="price">￥{{globalWxs.formatFenPrice(totalPrice)}}</text>
+      </view>
+      <button class="pay {{selectedCount===0?'disabled':''}}"
+              @tap="onClickPay">下单
+      </button>
+    </view>
+  </view>
+</template>
+
+<script>
+  import wepy from '@wepy/core'
+  import NetworkManagerCart from '../../network/NetworkManagerCart';
+  // import UnitTool from '../../tool/UnitTool';
+  import CartCell from '@/components/widget/cart-cell';
+  import globalWxs from '../../wxs/global.wxs'
+  import cartWxs from '../../wxs/cart.wxs'
+  import { connect } from 'wepy-redux' // eslint-disable-line
+  @connect({
+    isLogin(state) {
+      return state.user.hasAuthor;
+    }
+  })
+   wepy.page ({
+    config:{
+      navigationBarTitleText: '购物车'
+    },
+
+    components:{
+      'cart-cell': CartCell
+    },
+
+    wxs:{
+      globalWxs,
+      cartWxs
+    },
+
+    data:{
+      isEditing: false,
+      selectedIds: [],
+      goodsList: [],
+      tips: [
+        '7天无忧退货',
+        '48小时快速退款',
+        '满88元免邮费'
+      ],
+      delBtnWidth: 120,
+      startX: 0
+    },
+
+    computed:{
+      selectedCount(){
+        return this.selectedIds.length;
+      },
+      totalPrice(){
+        let total = 0;
+        if (this.selectedIds.length > 0) {
+          this.selectedIds.forEach(id => {
+            let index = this.goodsList.findIndex(item => item.cartId === id);
+            let goods = this.goodsList[index];
+            total += goods.nbPrice * goods.num;
+          })
+          return total;
+        } else {
+          return 0
+        }
+      },
+      isSelectedAll() {
+        return this.selectedCount === this.goodsList.length;
+      }
+    },
+
+    methods:{
+      onClickLogin() {
+        wepy.navigateTo({
+          url: '../mine/login'
+        })
+      },
+      onClickGoodsSelected(goods){
+        if (this.selectedIds.findIndex(id => {
+            return id === goods.cartId;
+          }) >= 0) {
+          this.selectedIds.splice(this.selectedIds.findIndex(id => id === goods.cartId), 1)
+        } else {
+          this.selectedIds.push(goods.cartId)
+        }
+        this.$apply();
+      },
+      onClickGoods(goods) {
+        wepy.navigateTo({
+          url: '../main/goods-detail?skuId=' + goods.skuId
+        })
+      },
+      onClickSelectAll() {
+        if (this.selectedIds.length === this.goodsList.length) {
+          this.selectedIds = [];
+        } else {
+          this.goodsList.forEach(goods => {
+            this.selectedIds.push(goods.cartId);
+          })
+        }
+        this.$apply();
+      },
+      onClickMinus(goods) {
+        if (goods.num === 1) {
+          return;
+        }
+        let params = {
+          'skuReqs': [
+            {
+              'num': 1,
+              'skuId': goods.skuId
+            }
+          ]
+        }
+        wepy.showNavigationBarLoading();
+        NetworkManagerCart.deleteCartGoods(params).then(success => {
+//          更新购物车数据
+          NetworkManagerCart.fetchCartGoods().then(data => {
+            this.goodsList = data.skus;
+            /* 因为商品数量更新的原因要更新整个列表
+             * 在已选择栏中删除旧数据 添加新数据 */
+            let targetIndex = this.selectedIds.findIndex(id => id === goods.cartId);
+            if (targetIndex < 0) {
+              this.selectedIds.push(goods.cartId)
+            }
+            this.$apply();
+            wepy.hideNavigationBarLoading();
+          }, err => {
+            wepy.showToast({title: err.message, icon: 'none'})
+            wepy.hideNavigationBarLoading();
+          })
+        }, err => {
+          wepy.showToast({title: err.message, icon: 'none'})
+          wepy.hideNavigationBarLoading();
+        })
+      },
+      onClickPlus(goods) {
+        let params = {
+          'skuReqs': [
+            {
+              'num': 1,
+              'skuId': goods.skuId
+            }
+          ]
+        }
+        wepy.showNavigationBarLoading();
+        NetworkManagerCart.addCart(params).then(success => {
+//          更新购物车数据
+          NetworkManagerCart.fetchCartGoods().then(data => {
+            this.goodsList = data.skus;
+            this.$apply();
+            /* 因为商品数量更新的原因要更新整个列表
+             * 在已选择栏中删除旧数据 添加新数据
+             */
+            let targetIndex = this.selectedIds.findIndex(id => id === goods.cartId);
+            if (targetIndex < 0) {
+              this.selectedIds.push(goods.cartId)
+            }
+            this.$apply();
+            wepy.hideNavigationBarLoading();
+          }, err => {
+            wepy.showToast({title: err.message, icon: 'none'})
+            wepy.hideNavigationBarLoading();
+          })
+        }, err => {
+          wepy.showToast({title: err.message, icon: 'none'})
+          wepy.hideNavigationBarLoading();
+        })
+      },
+      onClickDel(goods) {
+        let params = {
+          'skuReqs': [
+            {
+              'num': goods.num,
+              'skuId': goods.skuId
+            }
+          ]
+        };
+        wepy.showNavigationBarLoading();
+        NetworkManagerCart.deleteCartGoods(params)
+          .then(data => {
+            this.selectedIds.splice(
+              this.selectedIds.findIndex(id => id === goods.cartId), 1);
+            wepy.hideNavigationBarLoading();
+            this.fetchGoodsList();
+          }, err => {
+            wepy.showToast({title: err.message, icon: 'none'})
+            wepy.hideNavigationBarLoading();
+          })
+      },
+      onChangeNum(option) {
+        let newVal = option.newVal;
+        let goods = option.goods;
+        let difference = newVal - goods.num;
+        let params = {
+          'skuReqs': [
+            {
+              'num': Math.abs(difference),
+              'skuId': goods.skuId
+            }
+          ]
+        }
+        if (difference > 0) {
+          wepy.showNavigationBarLoading();
+          NetworkManagerCart.addCart(params).then(data => {
+//          更新购物车数据
+            NetworkManagerCart.fetchCartGoods().then(data => {
+              this.goodsList = data.skus;
+              /* 因为商品数量更新的原因要更新整个列表
+               * 在已选择栏中删除旧数据 添加新数据
+               */
+              let targetIndex = this.selectedIds.findIndex(id => id === goods.cartId);
+              if (targetIndex < 0) {
+                this.selectedIds.push(goods.cartId)
+              }
+              this.$apply();
+              wepy.hideNavigationBarLoading();
+            }, err => {
+              wepy.showToast({title: err.message, icon: 'none'})
+              wepy.hideNavigationBarLoading();
+            })
+          }, err => {
+            wepy.showToast({title: err.message, icon: 'none'})
+            wepy.hideNavigationBarLoading();
+          })
+        } else {
+          wepy.showNavigationBarLoading();
+          NetworkManagerCart.deleteCartGoods(params).then(data => {
+//          更新购物车数据
+            NetworkManagerCart.fetchCartGoods().then(data => {
+              this.goodsList = data.skus;
+              /* 因为商品数量更新的原因要更新整个列表
+               * 在已选择栏中删除旧数据 添加新数据 */
+              let targetIndex = this.selectedIds.findIndex(id => id === goods.cartId);
+              if (targetIndex < 0) {
+                this.selectedIds.push(goods.cartId)
+              }
+              this.$apply();
+              wepy.hideNavigationBarLoading();
+            }, err => {
+              wepy.showToast({title: err.message, icon: 'none'})
+              wepy.hideNavigationBarLoading();
+            })
+          }, err => {
+            wepy.showToast({title: err.message, icon: 'none'})
+            wepy.hideNavigationBarLoading();
+          })
+        }
+      },
+      onClickPay() {
+        if (this.selectedIds.length === 0) {
+          return
+        }
+        let selectedList = [];
+        this.selectedIds.forEach(id => {
+          let index = this.goodsList.findIndex(item => item.cartId === id);
+          let goods = this.goodsList[index];
+          selectedList.push(goods);
+        })
+        let payInfo = JSON.stringify({
+          total: this.totalPrice,
+          selectedList: selectedList
+        })
+        wepy.navigateTo({
+          url: '../payment/payment?payInfo=' + payInfo
+        })
+      },
+      touchS: function (option) {
+        let e = option.event;
+        // let index = option.index;
+        if (e.touches.length === 1) {
+          // 设置触摸起始点水平方向位置
+          this.startX = e.touches[0].clientX;
+          this.$apply();
+        }
+      },
+      touchM: function (option) {
+        let e = option.event;
+        let index = option.index;
+        if (e.touches.length === 1) {
+          // 手指移动时水平方向位置
+          let moveX = e.touches[0].clientX;
+          // 手指起始点位置与移动期间的差值
+          let disX = this.startX - moveX;
+          let delBtnWidth = this.data.delBtnWidth;
+          let txtStyle = '';
+          if (disX === 0 || disX < 0) {
+            // 如果移动距离小于等于0，文本层位置不变
+            txtStyle = 'left:0px';
+          } else if (disX > 0) {
+            // 移动距离大于0，文本层left值等于手指移动距离
+            txtStyle = 'left:-' + disX + 'px';
+            if (disX >= delBtnWidth) {
+              // 控制手指移动距离最大值为删除按钮的宽度
+              txtStyle = 'left:-' + delBtnWidth + 'px';
+            }
+          }
+//          this.[this.index] = txtStyle;
+          this.goodsList[index].txtStyle = txtStyle;
+          this.$apply();
+        }
+      },
+      touchE: function (option) {
+        let e = option.event;
+        let index = option.index;
+        if (e.changedTouches.length === 1) {
+          // 手指移动结束后水平位置
+          let endX = e.changedTouches[0].clientX;
+          // 触摸开始与结束，手指移动的距离
+          let disX = this.startX - endX;
+          let delBtnWidth = this.data.delBtnWidth;
+          // 如果距离小于删除按钮的1/2，不显示删除按钮
+          let txtStyle = disX > delBtnWidth / 2 ? 'left:-' + delBtnWidth + 'px' : 'left:0px';
+          this.goodsList[index].txtStyle = txtStyle;
+          this.$apply();
+        }
+      }
+    },
+
+    fetchGoodsList() {
+      wepy.showNavigationBarLoading();
+      NetworkManagerCart.fetchCartGoods().then(data => {
+//        let selectedJudgeMap = {};
+//        let goodsCountList = {};
+//        let goodsKeyList = {};
+//        for (let goods of data.skus) {
+//          selectedJudgeMap[goods.skuId] = false;
+//          goodsCountList[goods.skuId] = goods.num;
+//          goodsKeyList[goods.skuId] = goods;
+//        }
+        this.goodsList = data.skus;
+        this.$apply();
+        wepy.hideNavigationBarLoading();
+        console.log(data)
+      }, err => {
+        wepy.showToast({title: err.message, icon: 'none'})
+        wepy.hideNavigationBarLoading();
+      })
+    },
+
+    onShow() {
+      if (this.isLogin) {
+        wepy.showNavigationBarLoading();
+        NetworkManagerCart.fetchCartGoods().then(data => {
+          this.goodsList = data.skus;
+          let newIds = [];
+//        找到刚刚删除的商品，更新已选列表
+          this.selectedIds.forEach((id, index) => {
+            if (this.goodsList.some(goods => {
+                return goods.cartId === id
+              })) {
+              newIds.push(id);
+            }
+          })
+          this.selectedIds = newIds;
+          this.$apply();
+          wepy.hideNavigationBarLoading();
+        }, err => {
+          wepy.showToast({title: err.message, icon: 'none'})
+          wepy.hideNavigationBarLoading();
+        })
+      }
+    },
+
+    onLoad() {
+      this.initEleWidth();
+    },
+
+    getEleWidth(w) {
+      let real = 0;
+      try {
+        let res = wepy.getSystemInfoSync().windowWidth;
+        let scale = (750 / 2) / (w / 2);// 以宽度750px设计稿做宽度的自适应
+        // console.log(scale);
+        real = Math.floor(res / scale);
+        return real;
+      } catch (e) {
+        return false;
+        // Do something when catch error
+      }
+    },
+
+    initEleWidth() {
+      let delBtnWidth = this.getEleWidth(this.data.delBtnWidth);
+      this.delBtnWidth = delBtnWidth;
+      this.$apply();
+    }
+  })
+</script>

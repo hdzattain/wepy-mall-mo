@@ -1,0 +1,202 @@
+<style lang="scss" rel="stylesheet/scss">
+  @import '../../assets/scss/index.scss';
+
+  page {
+    @include flex-y-middle();
+    input {
+      background-color: transparent;
+      border-bottom: 1px solid #666;
+    }
+
+    .mobile-section {
+      @include flex-center();
+      width: 500rpx;
+      margin-top: 100rpx;
+      font-size: $xg-size-5;
+      .input-wrapper {
+        @include flex(1);
+        padding-left: 20rpx;
+        input {
+          width: 100%;
+          height: 60rpx;
+          line-height: 60rpx;
+          font-size: $xg-size-5;
+          padding: 0 10rpx;
+        }
+      }
+    }
+
+    .verify-section {
+      width: 500rpx;
+      margin-top: 60rpx;
+      @include flex-x-middle();
+      font-size: $xg-size-5;
+      .input-wrapper {
+        @include flex(1);
+        padding-right: 20rpx;
+        input {
+          width: 100%;
+          height: 60rpx;
+          line-height: 60rpx;
+          font-size: $xg-size-5;
+          padding: 0 10rpx;
+        }
+      }
+      .btn {
+        width: 180rpx;
+        font-size: $xg-size-5;
+        display: inline-block;
+        height: 60rpx;
+        line-height: 60rpx;
+        background-color: $xg-c-red;
+        color: #fff;
+        text-align: center;
+        &.djs {
+          background-color: #dfdfdf;
+        }
+      }
+    }
+
+    .login {
+      width: 400rpx;
+      height: 70rpx;
+      line-height: 70rpx;
+      font-size: $size-6;
+      color: #fff;
+      background: $xg-c-red;
+      margin-top: 300rpx;
+    }
+  }
+</style>
+<template>
+  <view class="mobile-section">
+    <text>手机号</text>
+    <view class="input-wrapper">
+      <input type="number" @input="inputMobile" maxlength="11"/>
+    </view>
+  </view>
+  <view class="verify-section">
+    <view class="input-wrapper">
+      <input type="number" value="{{verifyCode}}" @input="inputVerifyCode"/>
+    </view>
+    <view class="btn djs" wx:if="{{showDJS}}">{{timeout}}s</view>
+    <view wx:else class="btn" @tap="onClickVerify">获取验证码</view>
+  </view>
+  <button class="login" @tap="onClickLogin">提交</button>
+</template>
+
+<script>
+  import wepy from '@wepy/core'
+  import {getStore, connect} from 'wepy-redux' // eslint-disable-line
+  import {UPDATE_USER_INFO, UPDATE_AUTHOR_INFO} from '../../store/types/user'
+  import StringTool from '../../tool/StringTool'
+  import NetworkManagerAuth from '../../network/NetworkManagerAuth'
+
+  @connect({
+    authorData(state) {
+      return state.user.authorData
+    },
+    userInfo(state) {
+      return state.user.userInfo
+    }
+  })
+
+   wepy.page ({
+    config = {
+      navigationBarTitleText: '登录'
+    }
+    components = {}
+
+    data = {
+      mobile: '',
+      verifyCode: '',
+      timeout: 60,
+      showDJS: false,
+      verifyKey: '',
+      djs: {},
+      userInfo: {}
+    }
+
+    computed = {}
+
+    methods = {
+      inputMobile(e) {
+        this.mobile = e.detail.value;
+        this.$apply();
+      },
+      inputVerifyCode(e) {
+        this.verifyCode = e.detail.value;
+        this.$apply();
+      },
+      onClickLogin() {
+        if (!StringTool.isMobile(this.mobile)) {
+          wepy.showToast({title: '请输入正确的手机号', icon: 'none'});
+          return
+        }
+        if (!StringTool.isVerifyCode(this.verifyCode)) {
+          wepy.showToast({title: '请输入正确验证码', icon: 'none'});
+          return
+        }
+        wepy.showNavigationBarLoading();
+        NetworkManagerAuth.userLogin('mobile', 'wxmini', this.mobile, this.verifyCode, '', '', this.userInfo.openId, this.userInfo.unionId, this.userInfo.nickName, this.mobile, this.verifyKey)
+          .then(authData => {
+            const store = getStore();
+            const authorData = {
+              author: authData,
+              hasAuthor: true,
+              hasUserId: true,
+              token: 'Bearer ' + authData.access_token
+            }
+            store.dispatch({type: UPDATE_AUTHOR_INFO, ...authorData});
+            NetworkManagerAuth.getUserInfo(authorData.token)
+              .then(data => {
+                store.dispatch({type: UPDATE_USER_INFO, userInfo: data});
+                wepy.navigateBack();
+              }, err => {
+                wepy.showToast({title: err.message, icon: 'none'});
+                wepy.hideNavigationBarLoading();
+              })
+          }, err => {
+            wepy.hideNavigationBarLoading();
+            wepy.showToast({title: err.message, icon: 'none'})
+          })
+      },
+      onClickVerify() {
+        if (!StringTool.isMobile(this.mobile)) {
+          wepy.showToast({title: '请输入正确的手机号', icon: 'none'});
+          return
+        }
+        wepy.showNavigationBarLoading();
+        NetworkManagerAuth.getVerifyCode(this.mobile)
+          .then(data => {
+            wepy.hideNavigationBarLoading();
+            this.verifyKey = data;
+            this.showDJS = true;
+            this.$apply();
+            this.djs = setInterval(() => {
+              if (this.timeout === 1) {
+                this.showDJS = false;
+                this.timeout = 60;
+                this.$apply();
+                clearInterval(this.djs);
+                return
+              }
+              this.timeout--
+              this.$apply();
+            }, 1000)
+          }, err => {
+            wepy.hideNavigationBarLoading();
+            wepy.showToast({title: err.message, icon: 'none'})
+          })
+      }
+    }
+
+    onLoad() {
+      this.$apply();
+    }
+
+    onUnload() {
+      clearInterval(this.djs);
+    }
+  })
+</script>

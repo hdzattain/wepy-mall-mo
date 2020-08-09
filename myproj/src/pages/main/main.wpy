@@ -1,0 +1,418 @@
+<style lang="scss" rel="stylesheet/scss">
+  @import "../../assets/scss/index.scss";
+  .top-search {
+    @include flex-x-middle();
+    justify-content: center;
+    width: 100%;
+    padding-left: 30rpx;
+    padding-right: 30rpx;
+    height: 118rpx;
+    background-color: $xg-c-bg;
+    .search-input {
+      @include flex-x-middle();
+      justify-content: center;
+      width: 100%;
+      height: 78rpx;
+      background-color: #fff;
+      border-radius: 78rpx;
+      image {
+        width: 27rpx;
+        height: 31rpx;
+        margin-right: 10rpx;
+      }
+      text {
+        color: #999;
+        font-size: $xg-size-4;
+        font-weight: lighter;
+      }
+    }
+  }
+  .banner{
+    .banner-item{
+      height: 320rpx;
+      .image{
+        width: 100%;
+        height: 100%;
+      }
+    }
+  }
+  .tips {
+    background-color: #fff;
+    @include flex-x-middle();
+    @include flex-space-between();
+    padding: 0 30rpx;
+    height: 70rpx;
+    view {
+      font-size: $xg-size-2;
+      color: #000;
+      font-weight: lighter;
+      @include flex-x-middle();
+      image {
+        width: 26rpx;
+        height: 26rpx;
+        margin-right: 10rpx;
+      }
+    }
+  }
+  .categories {
+    @include clearfix();
+    padding: 40rpx 20rpx;
+    font-size: $xg-size-4;
+    view {
+      float: left;
+      width: 20%;
+      height: 150rpx;
+      @include flex-y-middle();
+      @include justify-content-center();
+      image {
+        width: 52rpx;
+        height: 52rpx;
+        margin-bottom: 12rpx;
+      }
+    }
+  }
+  .main-section {
+    background-color: $xg-c-white;
+    margin-bottom: 30rpx;
+    padding: 0 .1rem;
+    .title {
+      display: block;
+      text-align: center;
+      font-size: $xg-size-6;
+      color: $xg-c-black;
+      height: 120rpx;
+      line-height: 120rpx;
+    }
+    .recommend-content {
+      @include clearfix();
+      padding: 0 10rpx;
+    }
+
+    &.hot-section {
+      .recommend-item {
+        &:first-of-type {
+          width: 100%;
+        }
+      }
+    }
+
+    .go-more {
+      @include flex-center();
+      height: 116rpx;
+      border-top: 2px solid $xg-c-seg;
+      font-size: $xg-size-3;
+      color: #333;
+      font-weight: lighter;
+      image {
+        width: 16rpx;
+        margin-left: 16rpx;
+      }
+    }
+  }
+
+  .new-goods {
+    background: #fff;
+    .swiper{
+      .swiper-item {
+        height: 100%;
+      }
+    }
+  }
+
+  .title-area {
+    height: 100rpx;
+    .icon {
+      width: 40rpx;
+      height: 40rpx;
+    }
+  }
+</style>
+<template>
+  </wxs>
+  <view class="top-search">
+    <view class="search-input" @tap="onClickSearch">
+      <image src="./img/icon-search.png"></image>
+      <text>搜索商品，共99999款商品</text>
+    </view>
+  </view>
+  <view class="main page">
+    <swiper class="banner">
+      <swiper-item key="index" class="banner-item">
+        <image @tap="onClickBanner" class="image" src="/assets/main/temp_banner.png">
+        </image>
+      </swiper-item>
+    </swiper>
+    <view class="tips">
+      <view>
+        <image src="./img/blue-tip.png">
+        </image>
+        <text>小呱自营假1赔3</text>
+      </view>
+      <view>
+        <image src="./img/blue-tip.png">
+        </image>
+        <text>7天无忧退货</text>
+      </view>
+      <view>
+        <image src="./img/blue-tip.png">
+        </image>
+        <text>次日快速送达</text>
+      </view>
+    </view>
+    <view class="categories">
+      <repeat for="{{categories}}"
+              index="index"
+              item="cat">
+        <view @tap="onClickCategory({{cat}})">
+          <image src="{{cat.icon}}">
+          </image>
+          <text>{{cat.catName}}</text>
+        </view>
+      </repeat>
+      <view @tap="onClickAllCategory">
+        <text>查看更多</text>
+      </view>
+    </view>
+
+    <!--<view class="main-section hot-section">-->
+      <!--<text class="title">人气推荐</text>-->
+      <!--<view class="recommend-content"-->
+            <!--@touchstart="actionTouchCategoryStart"-->
+            <!--@touchmove="actionTouchCategoryMove"-->
+            <!--@touchend="actionTouchCategoryEnd">-->
+        <!--<repeat for="{{hotGoods}}" item="goods">-->
+          <!--<goods-cell :goods="goods" @clickGoods.user="onClickGoods"></goods-cell>-->
+        <!--</repeat>-->
+      <!--</view>-->
+    <!--</view>-->
+    <repeat for="{{categoryGroup}}"
+            item="group"
+            index="index">
+      <view class="main-section" wx:if="{{group.category.catId !== 1320 && group.category.catId !== 1319}}">
+        <text class="title">{{group.category.catName}}</text>
+        <view class="recommend-content"
+              @touchstart="actionTouchCategoryStart"
+              @touchmove="actionTouchCategoryMove"
+              @touchend="actionTouchCategoryEnd">
+          <repeat for="{{group.goods}}" item="goods">
+            <goods-cell :goods="goods" @clickGoods.user="onClickGoods"></goods-cell>
+          </repeat>
+        </view>
+        <view class="go-more"
+              @tap="onClickCategory({{group.category}})">
+          <text>查看更多</text>
+          <image src="./img/black-right-arrow.png" mode="widthFix"></image>
+        </view>
+      </view>
+    </repeat>
+  </view>
+</template>
+
+<script>
+  import wepy from '@wepy/core'
+  import NetworkManagerMain from '../../network/NetworkManagerMain';
+  import GoodsCell from '@/components/widget/goods-cell';
+   wepy.page ({
+    config:{
+      navigationBarTitleText: '首页',
+      enablePullDownRefresh: true
+    },
+    data:{
+      animationLeftData: {},
+      animationRightData: {},
+      hotGoods: [],
+      recommendGoods: [],
+      categories: [
+        {
+          catName: '服装',
+          icon: './img/icon-fuzhuang.png',
+          catId: 1315
+        },
+//        {
+//          catName: '母婴',
+//          icon: './img/icon-muying.png',
+//          catId: 1319
+//        },
+        {
+          catName: '数码',
+          icon: './img/icon-shuma.png',
+          catId: 652
+        },
+        {
+          catName: '手机',
+          icon: './img/icon-shouji.png',
+          catId: 9987
+        },
+        {
+          catName: '美妆',
+          icon: './img/icon-meizhuang.png',
+          catId: 1316
+        },
+        {
+          catName: '个护',
+          icon: './img/icon-gehu.png',
+          catId: 1316
+        },
+        {
+          catName: '办公',
+          icon: './img/icon-bangong.png',
+          catId: 670
+        },
+        {
+          catName: '家电',
+          icon: './img/icon-jiadian.png',
+          catId: 737
+        },
+//        {
+//          catName: '食品',
+//          icon: './img/icon-shipin.png',
+//          catId: 1320
+//        },
+        {
+          catName: '珠宝',
+          icon: './img/icon-zhubao.png',
+          catId: 6144
+        }
+      ],
+      categoryGroup: [],
+      touchMoveRecordList: [],
+      isTouching: false,
+      isTriggerInTouching: false,
+      leftAnimation: null,
+      rightAnimation: null
+    },
+
+    components = {
+      'goods-cell': GoodsCell
+    },
+
+    doChangeAnimation(){
+      let leftAnimation = this.leftAnimation;
+      leftAnimation.rotate3d(0, 1, 0, 360).step();
+      leftAnimation.rotate3d(0, 1, 0, 0).step({duration: 0});
+      this.animationLeftData = leftAnimation.export()
+      let rightAnimation = this.rightAnimation;
+      rightAnimation.rotate3d(0, 1, 0, -360).step();
+      rightAnimation.rotate3d(0, 1, 0, 0).step({duration: 0});
+      this.animationRightData = rightAnimation.export()
+      setTimeout(() => {
+        this.animationLeftData = {};
+        this.animationRightData = {};
+      }, 1000)
+    },
+
+    methods:{
+      onClickBanner() {
+
+      },
+      onClickGoods(goods){
+        wepy.navigateTo({
+          url: 'goods-detail?skuId=' + goods.skuId
+        })
+      },
+      onClickCategory(cat) {
+        wepy.navigateTo({
+          url: 'recommend-list?category=' + JSON.stringify(cat)
+        })
+      },
+//      隐藏食品类目
+      onClickAllCategory() {
+        wepy.switchTab({
+          url: '../category/category'
+        })
+      },
+      actionTouchCategoryStart(e){
+        this.isTouching = true;
+        this.touchMoveRecordList = [];
+      },
+      actionTouchCategoryEnd(e){
+        this.isTouching = false;
+        this.isTriggerInTouching = false;
+        this.touchMoveRecordList = [];
+      },
+      actionTouchCategoryMove(e){
+        // console.log(e.touches[0]);
+        let anyTouch = e.touches[0];
+        if (this.touchMoveRecordList.length >= 3){
+          let oldTouch = this.touchMoveRecordList.shift();
+          if (oldTouch.clientX - anyTouch.clientX > 80){
+            if (!this.isTriggerInTouching){
+              this.isTriggerInTouching = true;
+              this.doChangeAnimation();
+              console.log(oldTouch.clientX - anyTouch.clientX);
+            }
+          }
+        }
+        this.touchMoveRecordList.push({clientX: anyTouch.clientX, clientY: anyTouch.clientY})
+      },
+      onClickSearch() {
+        wepy.navigateTo({
+          url: '../other/search'
+        })
+      }
+    },
+
+    createAnimation(){
+      this.leftAnimation = wepy.createAnimation({
+        duration: 1000,
+        timingFunction: 'ease',
+        delay: 0
+      });
+      this.rightAnimation = wepy.createAnimation({
+        duration: 1000,
+        timingFunction: 'ease',
+        delay: 0
+      });
+    },
+
+    onShareAppMessage(res) {
+      return {
+        title: '',
+        path: '/pages/main/main',
+        success: function(res) {
+          // 转发成功
+        },
+        fail: function(res) {
+          // 转发失败
+        }
+      }
+    },
+
+    onLoad() {
+      this.createAnimation();
+      wepy.showNavigationBarLoading();
+      NetworkManagerMain.main().then(data => {
+        this.hotGoods = data.hotGoods;
+        this.recommendGoods = data.hotGoods;
+        this.categoryGroup = data.hotCategoryAndGoodsResp.items;
+        this.categoryGroup = this.categoryGroup.reverse();
+        this.$apply();
+        wepy.hideNavigationBarLoading();
+      }, err => {
+        wepy.showToast({title: err.message, icon: 'none'})
+        wepy.hideNavigationBarLoading();
+      });
+    },
+    onPullDownRefresh() {
+      wepy.showNavigationBarLoading();
+      wepy.setNavigationBarTitle({
+        title: '正在为您智能推荐...'
+      })
+      NetworkManagerMain.main().then(data => {
+        console.log(data);
+        this.hotGoods = data.hotGoods;
+        this.recommendGoods = data.hotGoods;
+        this.categoryGroup = data.hotCategoryAndGoodsResp.items;
+        wepy.setNavigationBarTitle({
+          title: '首页'
+        })
+        wepy.hideNavigationBarLoading();
+        wepy.stopPullDownRefresh();
+        this.$apply();
+      }, error => {
+        console.log(error);
+        wepy.showToast({title: error.message, icon: 'none'})
+      });
+    }
+  })
+</script>

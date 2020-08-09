@@ -1,0 +1,276 @@
+<style lang="scss" rel="stylesheet/scss">
+  @import '../../assets/scss/index.scss';
+  page {
+    border-top: 1rpx solid $xg-c-seg;
+    .address-area {
+      .list-item {
+        margin-bottom: 20rpx;
+      }
+      .address-item {
+        @include flex-x();
+        padding: 0 30rpx;
+        height: 180rpx;
+        background-color: #fff;
+        width: 100%;
+        .left-part {
+          @include flex-y-center();
+          flex-shrink: 0;
+          padding-right: 30rpx;
+          image {
+            width: 34rpx;
+            height: 34rpx;
+          }
+        }
+        .center-part {
+          @include flex-y-center();
+          @include flex();
+          .first-line {
+            @include flex-x-middle();
+            .name {
+              font-weight: bold;
+              margin-right: 30rpx;
+            }
+            .mobile {
+              margin-right: 30rpx;
+            }
+            .default {
+              font-size: $xg-size-0;
+              color: $xg-c-red;
+              border: 1px solid $xg-c-red;
+              border-radius: 4rpx;
+              width: 70rpx;
+              text-align: center;
+              height: 30rpx;
+              line-height: 30rpx;
+            }
+          }
+          .address {
+            margin-top: 20rpx;
+            color: #666;
+            font-size: $xg-size-3;
+          }
+        }
+        .right-part {
+          @include flex-x-middle();
+          @include justify-content-end();
+          image {
+            width: 12rpx;
+            height: auto;
+            &.edit {
+              width: 30rpx;
+              height: 30rpx;
+            }
+          }
+        }
+      }
+    }
+    .add-address-area {
+      position: fixed;
+      background: $color-yellow;
+      left: 20rpx;
+      bottom: 20rpx;
+      right: 20rpx;
+      height: 100rpx;
+      line-height: 100rpx;
+      text-align: center;
+      font-size: $xg-size-9;
+    }
+    .footer {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      width: 100%;
+      height: 148rpx;
+      background-color: #fff;
+      padding: 30rpx;
+      .add-button {
+        @include flex-center();
+        width: 100%;
+        height: 100%;
+        background-color: $xg-c-red;
+        font-size: $size-5;
+        color: #fff;
+        border-radius: 4rpx;
+      }
+    }
+  }
+</style>
+<template>
+  <view class="address-area">
+    <repeat for="{{addressList}}" item="address">
+      <address-cell class="list-item"
+                    :address="address"
+                    :index="index"
+                    :showEdit="true"
+                    :txtStyle="address.txtStyle"
+                    @clickAddress.user="onClickAddress"
+                    @clickEdit.user="onClickEdit"
+                    @clickDel.user="onClickDel"
+                    @touchS.user="touchS"
+                    @touchM.user="touchM"
+                    @touchE.user="touchE"></address-cell>
+    </repeat>
+  </view>
+  <view class="footer">
+    <view class="add-button" @tap="onClickAdd">
+      新增收货地址
+    </view>
+  </view>
+</template>
+
+<script>
+  import wepy from '@wepy/core'
+  import NetworkManagerMine from '@/network/NetworkManagerMine'
+  import AddressCell from '@/components/widget/address-cell';
+   wepy.page ({
+    config:{
+      navigationBarTitleText: '我的地址'
+    },
+    components:{
+      'address-cell': AddressCell
+    },
+
+    wxs:{
+    },
+
+    data:{
+      addressList: [],
+      delBtnWidth: 120,
+      startX: 0
+    },
+
+    computed:{
+    },
+
+    methods:{
+      onClickAddress(address) {
+        if (this.from === 'order') {
+          wepy.showNavigationBarLoading();
+          NetworkManagerMine.setDefaultAddress(address.id).then(data => {
+            wepy.hideNavigationBarLoading();
+            wepy.navigateBack();
+          }, err => {
+            wepy.showToast({title: err.message, icon: 'none'})
+            wepy.hideNavigationBarLoading();
+          })
+        }
+      },
+      onClickEdit(addressInfo) {
+        let query = JSON.stringify({addressInfo: addressInfo, type: 'edit'})
+        wepy.navigateTo({
+          url: './address-detail?query=' + query
+        })
+      },
+      onClickDel(address) {
+        wepy.showNavigationBarLoading();
+        NetworkManagerMine.deleteAddress(address.id)
+          .then(data => {
+            wepy.hideNavigationBarLoading();
+            this.fetchAddressList()
+          }, err => {
+            wepy.showToast({title: err.message, icon: 'none'})
+            wepy.hideNavigationBarLoading();
+          })
+      },
+      onClickAdd() {
+        wepy.navigateTo({
+          url: './address-detail'
+        })
+      },
+      touchS:function(option){
+        let e = option.event;
+        if (e.touches.length === 1){
+// 设置触摸起始点水平方向位置
+          this.startX = e.touches[0].clientX;
+          this.$apply();
+        }
+      },
+      touchM:function(option){
+        let e = option.event;
+        let index = option.index;
+        if (e.touches.length === 1){
+          // 手指移动时水平方向位置
+          let moveX = e.touches[0].clientX;
+          // 手指起始点位置与移动期间的差值
+          let disX = this.startX - moveX;
+          let delBtnWidth = this.data.delBtnWidth;
+          let txtStyle = '';
+          if (disX === 0 || disX < 0) {
+//              如果移动距离小于等于0，文本层位置不变
+            txtStyle = 'left:0px';
+          } else if (disX > 0){
+//            移动距离大于0，文本层left值等于手指移动距离
+            txtStyle = 'left:-' + disX + 'px';
+            if (disX >= delBtnWidth) {
+//              控制手指移动距离最大值为删除按钮的宽度
+              txtStyle = 'left:-' + delBtnWidth + 'px';
+            }
+          }
+//          this.[this.index] = txtStyle;
+          this.addressList[index].txtStyle = txtStyle;
+          this.$apply();
+        }
+      },
+      touchE:function(option){
+        let e = option.event;
+        let index = option.index;
+        if (e.changedTouches.length === 1) {
+//          手指移动结束后水平位置
+          let endX = e.changedTouches[0].clientX;
+//          触摸开始与结束，手指移动的距离
+          let disX = this.startX - endX;
+          let delBtnWidth = this.data.delBtnWidth;
+//          如果距离小于删除按钮的1/2，不显示删除按钮
+          let txtStyle = disX > delBtnWidth / 2 ? 'left:-' + delBtnWidth + 'px' : 'left:0px';
+          this.addressList[index].txtStyle = txtStyle;
+          this.$apply();
+        }
+      }
+    },
+
+    onLoad(option) {
+      if (option.hasOwnProperty('from')) {
+        this.from = option.from;
+        this.$apply();
+      }
+      this.initEleWidth();
+    },
+
+    onShow() {
+//        从我的页面和从订单进入地址列表两种情况的点击跳转不同
+      this.fetchAddressList();
+    },
+
+    fetchAddressList() {
+      wepy.showNavigationBarLoading();
+      NetworkManagerMine.fetchAddressList()
+        .then(data => {
+          this.addressList = data;
+          this.$apply();
+          wepy.hideNavigationBarLoading();
+        }, err => {
+          wepy.showToast({title: err.message, icon: 'none'})
+          wepy.hideNavigationBarLoading();
+        })
+    },
+
+    getEleWidth(w) {
+      let real = 0;
+      try {
+        let res = wepy.getSystemInfoSync().windowWidth;
+        let scale = (750 / 2) / (w / 2);
+//        以宽度750px设计稿做宽度的自适应
+        real = Math.floor(res / scale);
+        return real;
+      } catch (e) {
+        return false;
+        // Do something when catch error
+      }
+    },
+
+    initEleWidth() {
+      this.delBtnWidth = this.getEleWidth(this.data.delBtnWidth);
+      this.$apply();
+    }
+  })
+</script>

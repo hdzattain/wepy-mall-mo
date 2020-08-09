@@ -1,0 +1,8 @@
+module.exports = {
+  isSelected: function (selectedIds, goods) {
+    return selectedIds.some(
+      function (id) {
+        return id === goods.cartId;
+      })
+  }
+}

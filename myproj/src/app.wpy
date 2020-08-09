@@ -1,0 +1,199 @@
+<style lang="scss" rel="stylesheet/scss">
+  @import './assets/scss/index.scss';
+
+  .container {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: space-between;
+    box-sizing: border-box;
+    font-size: $xg-size-4;
+    color: #333;
+  }
+
+  page {
+    font-size: 30rpx;
+    background-color: $xg-c-bg;
+  }
+</style>
+
+<script>
+  import wepy from '@wepy/core'
+  import 'wepy-async-function'
+  import {setStore} from 'wepy-redux'
+  import configStore from './store'
+  import {UPDATE_USER_INFO, UPDATE_AUTHOR_INFO, UPDATE_CODE} from './store/types/user'
+  import NetworkManagerAuth from './network/NetworkManagerAuth'
+
+  const store = configStore()
+  setStore(store)
+  Array.prototype.contains = function (el) {
+    return this.indexOf(el) !== -1
+  }
+
+  export default class extends wepy.app {
+    config:{
+      pages: [
+        // 'pages/other/other',
+        'pages/main/main',
+        'pages/main/goods-detail',
+        'pages/main/comment-list',
+        'pages/main/recommend-list',
+        'pages/category/category',
+        'pages/category/category-detail',
+        'pages/cart/cart',
+        'pages/mine/mine',
+        'pages/mine/login',
+        'pages/mine/order-list',
+        'pages/mine/order-detail',
+        'pages/mine/order-track',
+        'pages/mine/address-list',
+        'pages/mine/address-detail',
+        'pages/mine/customer',
+        'pages/payment/payment',
+        'pages/payment/payment-result',
+        'pages/other/search',
+        'pages/main/auth'
+      ],
+      window: {
+        backgroundTextStyle: 'light',
+        navigationBarBackgroundColor: '#fff',
+        navigationBarTitleText: 'WeChat',
+        navigationBarTextStyle: 'black'
+      },
+      tabBar: {
+        color: 'rgb(6, 6, 6)',
+        selectedColor: '#6da3fd',
+        borderStyle: 'black',
+        list: [
+          {
+            selectedIconPath: 'assets/main/home-ed.png',
+            iconPath: 'assets/main/home.png',
+            pagePath: 'pages/main/main',
+            text: '首页'
+          },
+          {
+            selectedIconPath: 'assets/main/category-ed.png',
+            iconPath: 'assets/main/category.png',
+            pagePath: 'pages/category/category',
+            text: '分类'
+          },
+          {
+            selectedIconPath: 'assets/main/cart-ed.png',
+            iconPath: 'assets/main/cart.png',
+            pagePath: 'pages/cart/cart',
+            text: '购物车'
+          },
+          {
+            selectedIconPath: 'assets/main/user-ed.png',
+            iconPath: 'assets/main/user.png',
+            pagePath: 'pages/mine/mine',
+            text: '我的'
+          }
+        ]
+      }
+    }
+
+    constructor() {
+      super()
+      this.use('requestfix')
+      // this.use('promisify')
+    }
+
+    onLaunch(options) {
+      let that = this;
+      this.testAsync()
+      wepy.login({
+        success: (res) => {
+//              获取登录code成功
+          if (res.code) {
+            store.dispatch({
+              type: UPDATE_CODE,
+              code: res.code
+            });
+            that.getUserInfo(res.code);
+          }
+        }
+      })
+    }
+
+    sleep(s) {
+      return new Promise((resolve, reject) => {
+        setTimeout(() => {
+          resolve('promise resolved')
+        }, s * 1000)
+      })
+    }
+
+    async testAsync() {
+//      const data = await this.sleep(3);
+    }
+
+    getUserInfo(code) {
+//      wepy.authorize({
+//        scope: 'scope.userInfo',
+//        success() {
+//        }
+//      })
+      wepy.getUserInfo({
+        withCredentials: true,
+        success(res) {
+          wepy.showNavigationBarLoading();
+          NetworkManagerAuth.userLogin('wxmini_code', 'wxmini', code, code, res.encryptedData, res.iv).then(loginData => {
+            console.log(loginData);
+            wepy.hideNavigationBarLoading();
+            if (loginData.hasOwnProperty('openId')) {
+//                未注册，需要绑定手机号
+              store.dispatch({
+                type: UPDATE_USER_INFO,
+                userInfo: loginData
+              });
+            } else {
+//          更新Token信息
+              let authorData = {
+                author: loginData,
+                hasAuthor: true,
+                hasUserId: true,
+                token: 'Bearer ' + loginData.access_token,
+                timestamp: new Date().getTime()
+              }
+              store.dispatch({
+                type: UPDATE_AUTHOR_INFO,
+                ...authorData
+              });
+              NetworkManagerAuth.getUserInfo(authorData.token)
+                .then(userInfo => {
+                  console.log(userInfo);
+                  wepy.hideNavigationBarLoading();
+//              全局全局用户信息
+                  store.dispatch({
+                    type: UPDATE_USER_INFO,
+                    userInfo: userInfo
+                  });
+                }, err => {
+                  wepy.showToast({title: err.message, icon: 'none'});
+                  wepy.hideNavigationBarLoading();
+                })
+            }
+          }, err => {
+            wepy.showToast({title: err.message, icon: 'none'});
+            wepy.hideNavigationBarLoading();
+          })
+        },
+        fail(err) {
+          console.log('失败');
+          wepy.showModal({
+            title: '警告',
+            content: '尚未进行授权，请点击确定跳转到授权页面进行授权。',
+            success: function (res) {
+              wepy.navigateTo({
+                url: './auth',
+              })
+            }
+          })
+        }
+      })
+    }
+  }
+</script>

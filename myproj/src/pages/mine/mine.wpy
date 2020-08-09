@@ -1,0 +1,168 @@
+<style lang="scss" rel="stylesheet/scss">
+  @import '../../assets/scss/index.scss';
+
+  .mall-mine {
+    .mine-area {
+      position: relative;
+      margin-bottom: 20rpx;
+      .mine-back {
+        left: 0;
+        top: 0;
+        width: 100%;
+        height: 100%;
+        position: relative;
+        z-index: -1;
+      }
+      .mine-info {
+        position: absolute;
+        z-index: 10;
+        left: 30rpx;
+        top: 50%;
+        transform: translateY(-50%);
+        @include flex-x-middle();
+        .icon {
+          width: 140rpx;
+          height: 140rpx;
+          border-radius: 70rpx;
+          margin-right: 30rpx;
+        }
+        .name {
+          color: #fff;
+          font-size: $xg-size-8;
+        }
+
+        .login {
+          background-color: transparent;
+          border: 1px solid #fff;
+          border-radius: 4rpx;
+          color: $c-white;
+          width: 200rpx;
+          height: 60rpx;
+          line-height: 60rpx;
+          text-align: center;
+        }
+      }
+    }
+    .mine-item {
+      padding: 0 30rpx;
+      height: 100rpx;
+      border-bottom: 1px solid $xg-c-seg;
+      color: #333;
+      background-color: #fff;
+      @include flex-x-middle();
+      @include flex-justify-content_space-between();
+      .name {
+        @include flex-x-middle();
+        image {
+          width: 34rpx;
+          margin-right: 20rpx;
+        }
+      }
+      .right-arrow {
+        width: 20rpx;
+      }
+    }
+  }
+</style>
+<template>
+  <view class="mall-mine">
+    <view class="mine-area">
+      <image class="mine-back" src="./img/temp_mine-back.png" mode="widthFix">
+      </image>
+      <view wx:if="{{isLogin}}" class="mine-info">
+        <image class="icon" src="{{userInfo.headImg}}" mode="widthFix">
+        </image>
+        <view class="name">{{userInfo.nickName}}</view>
+      </view>
+      <view wx:else class="mine-info">
+        <image class="icon" src="./img/touxiang.png" mode="widthFix">
+        </image>
+        <view class="login" @tap="onClickLogin">立即登录</view>
+      </view>
+    </view>
+    <repeat for="{{mineItems}}">
+      <view class="mine-item" @tap="onClickItem({{index}})">
+        <view class="name">
+          <image src="{{item.icon}}" mode="widthFix">
+          </image>
+          {{item.name}}
+        </view>
+        <image class="right-arrow" src="./img/right-arrow.png" mode="widthFix">
+        </image>
+      </view>
+    </repeat>
+  </view>
+</template>
+
+<script>
+  import wepy from '@wepy/core'
+  import { getStore, connect } from 'wepy-redux' // eslint-disable-line
+
+  @connect({
+    isLogin(state) {
+      return state.user.hasAuthor;
+    },
+    userInfo(state) {
+      return state.user.userInfo;
+    }
+  })
+
+   wepy.page ({
+    config:{
+      navigationBarTitleText: '我的'
+    },
+
+    components:{},
+
+    data:{
+      mineItems: [
+        {
+          name: '我的订单',
+          icon: './img/order-icon.png'
+        },
+        {
+          name: '我的地址',
+          icon: './img/address-icon.png'
+        },
+        {
+          name: '小呱客服',
+          icon: './img/mobile-icon.png'
+        }]
+    },
+
+    computed:{},
+
+    methods:{
+      onClickItem(index) {
+          if (index === 2) {
+            wepy.makePhoneCall({
+              phoneNumber: '2161253866'
+            })
+            return
+          }
+        if (!this.isLogin) {
+          wepy.navigateTo({
+            url: './login'
+          })
+          return
+        }
+        let pathList = ['./order-list', './address-list', ''];
+        wepy.navigateTo({
+          url: pathList[index]
+        })
+      },
+      onClickLogin() {
+        wepy.navigateTo({
+          url: './login'
+        })
+      }
+    },
+
+    onLoad() {
+    },
+
+    onShow() {
+      console.log(getStore().getState());
+    }
+  })
+</script>
